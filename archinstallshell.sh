@@ -43,8 +43,7 @@ swapon -L p_swap
 pacstrap $MOUNTPOINT base base-devel linux linux-firmware nano
 # genfstab
 genfstab -Up $MOUNTPOINT > /mnt/etc/fstab
-#arch-chroot
-#arch-chroot $MOUNTPOINT/
+arch-chroot $MOUNTPOINT/
 # Konfiguration Keymap
 echo "KEYMAP=$KEYMAP" > ${MOUNTPOINT}/etc/vconsole.conf
 # hostname
@@ -55,27 +54,27 @@ echo $host_name > /etc/hostname
 # timezone
 ZONE='Europe'
 SUBZONE='Berlin'
-arch-chroot "ln -sf /usr/share/zoneinfo/${ZONE}/${SUBZONE} /etc/localtime"
+ln -sf /usr/share/zoneinfo/${ZONE}/${SUBZONE} /etc/localtime
 #arch_chroot "sed -i '/#NTP=/d' /etc/systemd/timesyncd.conf"
 #arch_chroot "sed -i 's/#Fallback//' /etc/systemd/timesyncd.conf"
 #arch_chroot "echo \"FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.fr.pool.ntp.org\" >> /etc/systemd/timesyncd.conf"
 #arch_chroot "systemctl enable systemd-timesyncd.service"
 # Systemkonfiguration
 echo LANG=de_DE.UTF-8 > /etc/locale.conf
-arch-chroot "sed -i 's/#\('${LOCALE_UTF8}'\)/\1/' /etc/locale.gen"
-arch-chroot "sed -i 's/#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen"
-arch-chroot "sed -i 's/#de_DE ISO-8859-1/de_DE ISO-8859-1/' /etc/locale.gen"
-arch-chroot "sed -i 's/#de_DE@euro ISO-8859-15/de_DE@euro ISO-8859-15/' /etc/locale.gen"
-arch-chroot "locale-gen"
+sed -i 's/#\('${LOCALE_UTF8}'\)/\1/' /etc/locale.gen
+sed -i 's/#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen
+sed -i 's/#de_DE ISO-8859-1/de_DE ISO-8859-1/' /etc/locale.gen
+sed -i 's/#de_DE@euro ISO-8859-15/de_DE@euro ISO-8859-15/' /etc/locale.gen
+locale-gen
 # Systemupdate
 pacman -Sy
 # mkinitcpio
-arch-chroot "mkinitcpio -p linux"
+mkinitcpio -p linux
 # Install Bootloader  
-pacman --root $MOUNTPOINT -S efibootmgr dosfstools gptfdisk
+pacman --root $MOUNTPOINT -S efibootmgr dosfstools gptfdisk --noconfirm
 # Konfiguration Bootloader
-arch-chroot "grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=arch_grub --recheck --debug"
-arch-chroot "grub-mkconfig -o /boot/grub/grub.cfg"
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=arch_grub --recheck --debug
+grub-mkconfig -o /boot/grub/grub.cfg
 
 umount_partitions(){
   mounted_partitions=(`lsblk | grep ${MOUNTPOINT} | awk '{print $7}' | sort -r`)
