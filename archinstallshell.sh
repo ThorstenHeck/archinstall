@@ -18,14 +18,12 @@ sgdisk -n 2:$sectorstart:$swapsect -c 2:"Swap Partition" -t 2:8200 $device # Swa
 sectorstart=`sgdisk -F $device`
 sectorend=`sgdisk -E $device`
 sgdisk -n 3:$sectorstart:$sectorend -c 3:"Root" -t 3:8300 $device
+# Systemupdate
+pacman -Sy --noconfirm
 # Mirrorlist
 cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
-pacman -S reflector
+pacman -S reflector --noconfirm
 reflector --verbose --country 'Germany' --latest 10 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist
-# Systemupdate
-pacman -Sy
-# Basisinstallation
-pacstrap $MOUNTPOINT base base-devel linux linux-firmware nano
 # Deklarieren der Variablen für das anlegen der Dateisysteme
 partuefi=`lsblk -no name,partlabel | grep 'EFI System Partition' | awk '{print $1}' | sed 's/^..//' | awk '{print "/dev/" $1}'`
 partroot=`lsblk -no name,partlabel | grep 'Root' | awk '{print $1}' | sed 's/^..//' | awk '{print "/dev/" $1}'`
@@ -33,47 +31,51 @@ partswap=`lsblk -no name,partlabel | grep 'Swap Partition' | awk '{print $1}' | 
 # uefi
 mkfs.fat -F 32 -n EFIBOOT $partuefi
 # root
-mkfs.ext4 -L p_arch $partroot
+y | mkfs.ext4 -L p_arch $partroot
 # swap
 mkswap -L p_swap $partswap
 # Partitionen einhängen
 mount -L p_arch /mnt  
 mkdir -p /mnt/boot  
 mount -L EFIBOOT /mnt/boot  
-swapon -L p_swap  
+swapon -L p_swap 
+# Basisinstallation
+pacstrap $MOUNTPOINT base base-devel linux linux-firmware nano
+# genfstab
+genfstab -Up $MOUNTPOINT > /mnt/etc/fstab
+#arch-chroot
+#arch-chroot $MOUNTPOINT/
 # Konfiguration Keymap
 echo "KEYMAP=$KEYMAP" > ${MOUNTPOINT}/etc/vconsole.conf
-# genfstab
-genfstab -Up $MOUNTPOINT > /mnt/etc/fstab 
 # hostname
 host_name='archlinux'
-echo $host_name > ${MOUNTPOINT}/etc/hostname
+echo $host_name > /etc/hostname
 #arch_chroot "sed -i '/127.0.0.1/s/$/ '${host_name}'/' /etc/hosts"
 #arch_chroot "sed -i '/::1/s/$/ '${host_name}'/' /etc/hosts"
 # timezone
 ZONE='Europe'
 SUBZONE='Berlin'
-arch_chroot "ln -sf /usr/share/zoneinfo/${ZONE}/${SUBZONE} /etc/localtime"
+arch-chroot "ln -sf /usr/share/zoneinfo/${ZONE}/${SUBZONE} /etc/localtime"
 #arch_chroot "sed -i '/#NTP=/d' /etc/systemd/timesyncd.conf"
 #arch_chroot "sed -i 's/#Fallback//' /etc/systemd/timesyncd.conf"
 #arch_chroot "echo \"FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.fr.pool.ntp.org\" >> /etc/systemd/timesyncd.conf"
 #arch_chroot "systemctl enable systemd-timesyncd.service"
 # Systemkonfiguration
 echo LANG=de_DE.UTF-8 > /etc/locale.conf
-arch_chroot "sed -i 's/#\('${LOCALE_UTF8}'\)/\1/' /etc/locale.gen"
-arch_chroot "sed -i 's/#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen"
-arch_chroot "sed -i 's/#de_DE ISO-8859-1/de_DE ISO-8859-1/' /etc/locale.gen"
-arch_chroot "sed -i 's/#de_DE@euro ISO-8859-15/de_DE@euro ISO-8859-15/' /etc/locale.gen"
-arch_chroot "locale-gen"
+arch-chroot "sed -i 's/#\('${LOCALE_UTF8}'\)/\1/' /etc/locale.gen"
+arch-chroot "sed -i 's/#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen"
+arch-chroot "sed -i 's/#de_DE ISO-8859-1/de_DE ISO-8859-1/' /etc/locale.gen"
+arch-chroot "sed -i 's/#de_DE@euro ISO-8859-15/de_DE@euro ISO-8859-15/' /etc/locale.gen"
+arch-chroot "locale-gen"
 # Systemupdate
 pacman -Sy
 # mkinitcpio
-arch_chroot "mkinitcpio -p linux"
+arch-chroot "mkinitcpio -p linux"
 # Install Bootloader  
 pacman --root $MOUNTPOINT -S efibootmgr dosfstools gptfdisk
 # Konfiguration Bootloader
-arch_chroot "grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=arch_grub --recheck --debug"
-arch_chroot "grub-mkconfig -o /boot/grub/grub.cfg"
+arch-chroot "grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=arch_grub --recheck --debug"
+arch-chroot "grub-mkconfig -o /boot/grub/grub.cfg"
 
 umount_partitions(){
   mounted_partitions=(`lsblk | grep ${MOUNTPOINT} | awk '{print $7}' | sort -r`)
