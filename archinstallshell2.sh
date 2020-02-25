@@ -18,12 +18,12 @@ sgdisk -n 2:$sectorstart:$swapsect -c 2:"Swap Partition" -t 2:8200 $device # Swa
 sectorstart=`sgdisk -F $device`
 sectorend=`sgdisk -E $device`
 sgdisk -n 3:$sectorstart:$sectorend -c 3:"Root" -t 3:8300 $device
+# Systemupdate
+pacman -Sy
 # Mirrorlist
 cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 pacman -S reflector
 reflector --verbose --country 'Germany' --latest 10 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist
-# Systemupdate
-pacman -Sy
 # Deklarieren der Variablen für das anlegen der Dateisysteme
 partuefi=`lsblk -no name,partlabel | grep 'EFI System Partition' | awk '{print $1}' | sed 's/^..//' | awk '{print "/dev/" $1}'`
 partroot=`lsblk -no name,partlabel | grep 'Root' | awk '{print $1}' | sed 's/^..//' | awk '{print "/dev/" $1}'`
