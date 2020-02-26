@@ -68,10 +68,10 @@ arch-chroot /mnt/ sed -i 's/#de_DE@euro ISO-8859-15/de_DE@euro ISO-8859-15/' /et
 arch-chroot /mnt/ locale-gen
 # Systemupdate
 pacman -Sy
-# mkinitcpio
+# mkinitcpiod
 arch-chroot /mnt/ mkinitcpio -p linux
 # Install Bootloader  
-pacman --root $MOUNTPOINT -S efibootmgr dosfstools gptfdisk --noconfirm
+pacman --root $MOUNTPOINT -S efibootmgr dosfstools gptfdisk grub --noconfirm
 # Konfiguration Bootloader
 arch-chroot /mnt/ grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=arch_grub --recheck --debug
 arch-chroot /mnt/ grub-mkconfig -o /boot/grub/grub.cfg
