@@ -2,6 +2,17 @@
 
 Da ich nun einige male Arch neu aufgesetzt haben, würde ich mich mal gerne an einen Automatismus zum installieren von Arch wagen.  
 
+## Installation
+
+curl https://raw.githubusercontent.com/ThorstenHeck/archinstall/master/archinstallshell2.sh | bash  
+
+## Warnung
+
+Die gesamte Festplatte wird durch den Vorgang gelöscht!!!  
+Nur zu Testzwecken benutzen.   
+
+Readme.md und tatsächliches Shell Script haben Abweichungen. die Readme Datei dient aber grundsätzlich als Erklärung der einzelnen Befehle.  
+
 ## Partitions Schema
 
 Das Partitions Schema soll statisch bleiben.  
@@ -24,7 +35,7 @@ Auf Basis dessen wird jeder Rechner Partitioniert.
 5. Partition Schema
 6. Partition Format
 7. Install Base System
-8.  
+8. WLAN Konfiguration
 
 
 ## Manuelle Konfiguration:  
@@ -50,11 +61,7 @@ Deklarieren der Variable MOUNTPOINT zu "/mnt".
     BOOT_MOUNTPOINT="/dev/sda"
     MOUNTPOINT="/mnt"
 ```
-
 Deklarieren der Editor Variable zu nano.  
-
-Deklarieren der Variable MOUNTPOINT zu "/mnt".  
-
 ```Bash
 # Editor
     EDITOR="nano"
@@ -235,7 +242,3 @@ ESSID=SECRET
 IP=dhcp
 Key=SECRET
 ```
-
-wget -O https://raw.githubusercontent.com/ThorstenHeck/archinstall/master/archinstallshell2.sh | bash  
-
-curl https://raw.githubusercontent.com/ThorstenHeck/archinstall/master/archinstallshell2.sh > archinstall.sh
