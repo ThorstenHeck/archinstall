@@ -7,12 +7,12 @@ Da ich nun einige male Arch neu aufgesetzt haben, würde ich mich mal gerne an e
 1. Arch Install Image booten (USB, PXE...)
 2. (optional) Loadkeys de-latin1 oder jedes andere präferierte Keymapping ausführen
 3. Internetverbindung aufbauen (LAN/wifi-menu)
-4. archinstallshell.sh auf via curl / wget auf System laden und ausführen:  
+4. archinstallshell.sh via curl / wget auf System laden und ausführen:  
 
 ```Bash
 curl https://raw.githubusercontent.com/ThorstenHeck/archinstall/master/archinstallshell.sh | bash
-```
 
+```
 ## Warnung
 
 Die gesamte Festplatte wird durch den Vorgang gelöscht!!!  
