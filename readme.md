@@ -1,4 +1,4 @@
-# Arch Linux install Script
+# Arch Linux Install Script
 
 Da ich nun einige male Arch neu aufgesetzt haben, würde ich mich mal gerne an einen Automatismus zum installieren von Arch wagen.  
 
