@@ -221,7 +221,7 @@ Erstellen eines netctl Profils
 ```Bash
 #!/bin/bash
 wlan=`iw dev | grep 'Interface' | awk '{print $2}'`
-SSID=QualQuappenLiebhaber01
+SSID=Secret
 netctlprofile=$wlan-$SSID
 touch /etc/netctl/$netctlprofile
 echo Description='Automatically generated profile' >> /etc/netctl/$netctlprofile
@@ -232,7 +232,7 @@ echo IP=dhcp >> /etc/netctl/$netctlprofile
 echo Key=SECRET >> /etc/netctl/$netctlprofile
 ```
 
-Pfad: /etc/netctl/wlan0-QualQuappenLiebhaber01  
+Pfad: /etc/netctl/wlan0-Secret  
 ```Bash
 Description='Automatically generated profile'
 Interface=wlan0
