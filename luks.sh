@@ -13,7 +13,7 @@ PARTROOT=$(lsblk -no name,partlabel | grep 'Root' | sed 's/^..//' | awk '{print 
 mkdir -p /root/luks
 ssh-keygen -t ed25519 -f /root/luks/luks.key -q -N ""
 chmod 0400 /root/luks/luks.key
-chown root:root /root/luks/luks/luks.key
+chown root:root /root/luks/luks.key
 cryptsetup luksFormat $PARTROOT --key-file /root/luks/luks.key --batch-mode
 cryptsetup open --type luks $PARTROOT main_part --key-file /root/luks/luks.key
 pvcreate /dev/mapper/main_part
