@@ -3,7 +3,7 @@ MOUNTPOINT="/mnt"
 DEVICE=$(lsblk -n -do name,tran | grep -v 'loop' | grep -v 'usb' | awk '{print "/dev/" $1}')
 RAM=$(free -t -m | grep 'Mem:' | awk '{print $2}')
 SWAP=$((RAM * 2))
-SWAPSECT=$((swap * 2048))
+SWAPSECT=$((SWAP * 2048))
 sgdisk -og $DEVICE
 sgdisk -n 1:2048:1050623 -c 1:"EFI System Partition" -t 1:ef00 $DEVICE
 SECTORSTART=$(sgdisk -F $DEVICE)
