@@ -11,7 +11,7 @@ sgdisk -n 2:$SECTORSTART:$SWAPSECT -c 2:"Swap Partition" -t 2:8200 $DEVICE
 SECTORSTART=$(sgdisk -F $DEVICE)
 SECTOREND=$(sgdisk -E $DEVICE)
 sgdisk -n 3:$SECTORSTART:$SECTOREND -c 3:"Root" -t 3:8300 $DEVICE
-
+sleep 2
 PARTUEFI=$(lsblk -no name,partlabel | grep 'EFI System Partition' | sed 's/^..//' | awk '{print "/dev/" $1}')
 PARTROOT=$(lsblk -no name,partlabel | grep 'Root' | sed 's/^..//' | awk '{print "/dev/" $1}')
 PARTSWAP=$(lsblk -no name,partlabel | grep 'Swap Partition' | sed 's/^..//' | awk '{print "/dev/" $1}')
@@ -51,3 +51,4 @@ arch-chroot $MOUNTPOINT grub-install --target=x86_64-efi --efi-directory=/boot -
 arch-chroot $MOUNTPOINT grub-mkconfig -o /boot/grub/grub.cfg
 
 umount -r $MOUNTPOINT
+swapoff -a
