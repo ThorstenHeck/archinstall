@@ -10,36 +10,41 @@ sleep 2
 PARTUEFI=$(lsblk -no name,partlabel | grep 'EFI System Partition' | sed 's/^..//' | awk '{print "/dev/" $1}')
 PARTROOT=$(lsblk -no name,partlabel | grep 'Root' | sed 's/^..//' | awk '{print "/dev/" $1}')
 
-# echo -n "initluks" cryptsetup luksFormat --key-file - $PARTROOT
-# cryptsetup open --type luks $PARTROOT main_part
-# pvcreate /dev/mapper/main_part
-# vgcreate main_group /dev/mapper/main_part
-# lvcreate -L32G main_group -n swap
-# lvcreate -L64G main_group -n root
-# lvcreate -l 100%FREE main_group -n home
-# mkfs.ext4 /dev/mapper/main_group-root
-# mkfs.ext4 /dev/mapper/main_group-home
-# mkswap /dev/mapper/main_group-swap
-# mount /dev/mapper/main_group-root ${MOUNTPOINT}
-# mkdir -p ${MOUNTPOINT}/home
-# mount /dev/mapper/main_group-home ${MOUNTPOINT}/home
-# swapon /dev/mapper/main_group-swap
-# mkdir -p ${MOUNTPOINT}/boot
-# mount $PARTUEFI ${MOUNTPOINT}/boot
+mkdir -p /root/luks
+ssh-keygen -t ed25519 -f /root/luks/luks.key -q -N ""
+chmod 0400 /root/luks/luks.key
+chown root:root /root/luks/luks/luks.key
+cryptsetup luksFormat $PARTROOT --key-file /root/luks/luks.key --batch-mode
+cryptsetup open --type luks $PARTROOT main_part --key-file /root/luks/luks.key
+pvcreate /dev/mapper/main_part
+vgcreate main_group /dev/mapper/main_part
+lvcreate -L32G main_group -n swap
+lvcreate -L64G main_group -n root
+lvcreate -l 100%FREE main_group -n home
+mkfs.ext4 /dev/mapper/main_group-root
+mkfs.ext4 /dev/mapper/main_group-home
+mkswap /dev/mapper/main_group-swap
+mount /dev/mapper/main_group-root ${MOUNTPOINT}
+mkdir -p ${MOUNTPOINT}/home
+mount /dev/mapper/main_group-home ${MOUNTPOINT}/home
+swapon /dev/mapper/main_group-swap
+mkdir -p ${MOUNTPOINT}/boot
+mount $PARTUEFI ${MOUNTPOINT}/boot
+mkdir -p ${MOUNTPOINT}/luks
+mount /root/luks/luks.key ${MOUNTPOINT}/luks
 
+pacman -Sy --noconfirm
+pacman -S reflector --noconfirm
+reflector --verbose --country 'Germany' --latest 10 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 
-# pacman -Sy --noconfirm
-# pacman -S reflector --noconfirm
-# reflector --verbose --country 'Germany' --latest 10 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+pacstrap -K $MOUNTPOINT base base-devel linux linux-firmware netctl
+genfstab -U $MOUNTPOINT > ${MOUNTPOINT}/etc/fstab
 
-# pacstrap -K $MOUNTPOINT base base-devel linux linux-firmware netctl
-# genfstab -U $MOUNTPOINT > ${MOUNTPOINT}/etc/fstab
-
-# HOSTNAME='archlinux'
-# ZONE='Europe'
-# SUBZONE='Berlin'
-# KEYMAP='de-latin1'
-# LANG='de_DE.UTF-8'
+HOSTNAME='archlinux'
+ZONE='Europe'
+SUBZONE='Berlin'
+KEYMAP='de-latin1'
+LANG='de_DE.UTF-8'
 
 # arch-chroot $MOUNTPOINT ln -sf /usr/share/zoneinfo/${ZONE}/${SUBZONE} /etc/localtime
 # arch-chroot $MOUNTPOINT echo $HOSTNAME > /etc/hostname
