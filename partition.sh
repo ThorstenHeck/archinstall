@@ -15,10 +15,13 @@ sgdisk -n 3:$SECTORSTART:$SECTOREND -c 3:"Root" -t 3:8300 $DEVICE
 PARTUEFI=$(lsblk -no name,partlabel | grep 'EFI System Partition' | sed 's/^..//' | awk '{print "/dev/" $1}')
 PARTROOT=$(lsblk -no name,partlabel | grep 'Root' | sed 's/^..//' | awk '{print "/dev/" $1}')
 PARTSWAP=$(lsblk -no name,partlabel | grep 'Swap Partition' | sed 's/^..//' | awk '{print "/dev/" $1}')
-mkfs.fat -F 32 -n EFIBOOT $PARTUEFI
-yes | mkfs.ext4 -L p_arch $PARTROOT
-mkswap -L p_swap $PARTSWAP
-mount -L p_arch $MOUNTPOINT  
-mkdir -p ${MOUNTPOINT}/boot  
-mount -L EFIBOOT ${MOUNTPOINT}/boot
-swapon -L p_swap 
+echo $PARTUEFI
+echo $PARTROOT
+echo $PARTSWAP
+#mkfs.fat -F 32 -n EFIBOOT $PARTUEFI
+#yes | mkfs.ext4 -L p_arch $PARTROOT
+#mkswap -L p_swap $PARTSWAP
+#mount -L p_arch $MOUNTPOINT  
+#mkdir -p ${MOUNTPOINT}/boot  
+#mount -L EFIBOOT ${MOUNTPOINT}/boot
+#swapon -L p_swap 
