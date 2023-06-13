@@ -59,17 +59,17 @@ arch-chroot $MOUNTPOINT locale-gen
 
 arch-chroot $MOUNTPOINT pacman -S wpa_supplicant networkmanager network-manager-applet dialog
 arch-chroot $MOUNTPOINT sh -c 'curl https://raw.githubusercontent.com/ThorstenHeck/archinstall/master/pacman.conf > /etc/pacman.conf'
-arch-chroot $MOUNTPOINT sh -c 'curl https://raw.githubusercontent.com/ThorstenHeck/archinstall/master/loader.conf > /boot/loader/loader.conf
-arch-chroot $MOUNTPOINT sh -c 'curl https://raw.githubusercontent.com/ThorstenHeck/archinstall/master/arcch.conf > /boot/loader/entries/arch.conf'
 arch-chroot $MOUNTPOINT sed -i 's/HOOKS.*/HOOKS=(base udev autodetect modconf kms keyboard keymap consolefront block encrypt lvm2 filesystems fsck)/ig' /etc/mkinitcpio.conf
 
-# arch-chroot $MOUNTPOINT pacman -Sy intel-ucode
-# arch-chroot $MOUNTPOINT pacman -S linux-headers linux-lts linux-lts-headers
-# arch-chroot $MOUNTPOINT pacman -S vim git
+arch-chroot $MOUNTPOINT pacman -Sy intel-ucode
+arch-chroot $MOUNTPOINT pacman -S linux-headers linux-lts linux-lts-headers
+arch-chroot $MOUNTPOINT pacman -S vim git
 
-# arch-chroot $MOUNTPOINT mkinitcpio -p linux
-# arch-chroot $MOUNTPOINT mkinitcpio -p linux-lts
-# arch-chroot $MOUNTPOINT bootctl --path=/boot/ install
+arch-chroot $MOUNTPOINT mkinitcpio -p linux
+arch-chroot $MOUNTPOINT mkinitcpio -p linux-lts
+arch-chroot $MOUNTPOINT bootctl --path=/boot/ install
+arch-chroot $MOUNTPOINT sh -c 'curl https://raw.githubusercontent.com/ThorstenHeck/archinstall/master/loader.conf > /boot/loader/loader.conf
+arch-chroot $MOUNTPOINT sh -c 'curl https://raw.githubusercontent.com/ThorstenHeck/archinstall/master/arch.conf > /boot/loader/entries/arch.conf'
 
 # ## sed REPLACE_ME...
 
