@@ -1,6 +1,6 @@
 #!/bin/bash
 MOUNTPOINT="/mnt"
-DEVICE=$(lsblk -n -do name,tran | grep -v 'loop' | grep -v 'usb' | awk '{print "/dev/" $1}'`
+DEVICE=$(lsblk -n -do name,tran | grep -v 'loop' | grep -v 'usb' | awk '{print "/dev/" $1}')
 RAM=$(free -t -m | grep 'Mem:' | awk '{print $2}')
 SWAP=$((RAM * 2))
 SWAPSECT=$((swap * 2048))
