@@ -31,7 +31,8 @@ swapon /dev/mapper/main_group-swap
 mkdir -p ${MOUNTPOINT}/boot
 mount $PARTUEFI ${MOUNTPOINT}/boot
 mkdir -p ${MOUNTPOINT}/luks
-mount /root/luks/luks.key ${MOUNTPOINT}/luks
+touch ${MOUNTPOINT}/luks/luks.key
+mount --bind /root/luks/luks.key ${MOUNTPOINT}/luks
 
 pacman -Sy --noconfirm
 pacman -S reflector --noconfirm
@@ -46,17 +47,17 @@ SUBZONE='Berlin'
 KEYMAP='de-latin1'
 LANG='de_DE.UTF-8'
 
-# arch-chroot $MOUNTPOINT ln -sf /usr/share/zoneinfo/${ZONE}/${SUBZONE} /etc/localtime
-# arch-chroot $MOUNTPOINT echo $HOSTNAME > /etc/hostname
-# arch-chroot $MOUNTPOINT echo LANG=$LANG > /etc/locale.conf
-# arch-chroot $MOUNTPOINT echo "KEYMAP=$KEYMAP" > /etc/vconsole.conf
+arch-chroot $MOUNTPOINT ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+arch-chroot $MOUNTPOINT echo "archlinux" > /etc/hostname
+arch-chroot $MOUNTPOINT echo "LANG=de_DE.UTF-8" > /etc/locale.conf
+arch-chroot $MOUNTPOINT echo "KEYMAP=de-latin1" > /etc/vconsole.conf
 
-# arch-chroot $MOUNTPOINT sed -i 's/#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen
-# arch-chroot $MOUNTPOINT sed -i 's/#de_DE ISO-8859-1/de_DE ISO-8859-1/' /etc/locale.gen
-# arch-chroot $MOUNTPOINT sed -i 's/#de_DE@euro ISO-8859-15/de_DE@euro ISO-8859-15/' /etc/locale.gen
-# arch-chroot $MOUNTPOINT locale-gen
+arch-chroot $MOUNTPOINT sed -i 's/#de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen
+arch-chroot $MOUNTPOINT sed -i 's/#de_DE ISO-8859-1/de_DE ISO-8859-1/' /etc/locale.gen
+arch-chroot $MOUNTPOINT sed -i 's/#de_DE@euro ISO-8859-15/de_DE@euro ISO-8859-15/' /etc/locale.gen
+arch-chroot $MOUNTPOINT locale-gen
 
-# arch-chroot $MOUNTPOINT pacman -S wpa_supplicant networkmanager network-manager-applet dialog
+arch-chroot $MOUNTPOINT pacman -S wpa_supplicant networkmanager network-manager-applet dialog
 # arch-chroot $MOUNTPOINT curl https://raw.githubusercontent.com/ThorstenHeck/archinstall/master/pacman.conf > /etc/pacman.conf
 
 # arch-chroot $MOUNTPOINT pacman -Sy intel-ucode
