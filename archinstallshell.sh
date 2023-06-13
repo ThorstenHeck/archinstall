@@ -27,7 +27,7 @@ pacman -Sy --noconfirm
 pacman -S reflector --noconfirm
 reflector --verbose --country 'Germany' --latest 10 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 
-pacstrap -K $MOUNTPOINT base base-devel linux linux-firmware nano
+pacstrap -K $MOUNTPOINT base base-devel linux linux-firmware netctl
 genfstab -U $MOUNTPOINT > ${MOUNTPOINT}/etc/fstab
 
 HOSTNAME='archlinux'
