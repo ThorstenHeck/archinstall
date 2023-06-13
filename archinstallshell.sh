@@ -49,7 +49,7 @@ arch-chroot $MOUNTPOINT mkinitcpio -p linux
 pacman --root $MOUNTPOINT -S efibootmgr dosfstools gptfdisk grub --noconfirm
 arch-chroot $MOUNTPOINT grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=arch_grub --recheck --debug
 arch-chroot $MOUNTPOINT grub-mkconfig -o /boot/grub/grub.cfg
-arch-chroot $MOUNTPOINT echo "initpw" | passwd root --stdin
+arch-chroot $MOUNTPOINT echo "root:initpw" | chpasswd
 
 swapoff -a
 umount -R $MOUNTPOINT
