@@ -57,9 +57,15 @@ arch-chroot $MOUNTPOINT sed -i 's/#de_DE ISO-8859-1/de_DE ISO-8859-1/' /etc/loca
 arch-chroot $MOUNTPOINT sed -i 's/#de_DE@euro ISO-8859-15/de_DE@euro ISO-8859-15/' /etc/locale.gen
 arch-chroot $MOUNTPOINT locale-gen
 
-arch-chroot $MOUNTPOINT pacman -S wpa_supplicant networkmanager network-manager-applet dialog lvm2 --noconfirm
+arch-chroot $MOUNTPOINT pacman -S wpa_supplicant networkmanager network-manager-applet dialog lvm2 ttf-dejavu ttf-liberation noto-fonts --noconfirm
+
+arch-chroot $MOUNTPOINT ln -s /etc/fonts/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d
+arch-chroot $MOUNTPOINT ln -s /etc/fonts/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d
+arch-chroot $MOUNTPOINT ln -s /etc/fonts/conf.avail/11-lcdfilter-default.conf /etc/fonts/conf.d
+    
+arch-chroot $MOUNTPOINT sh -c 'curl https://raw.githubusercontent.com/ThorstenHeck/archinstall/master/local.conf > /etc/fonts/local.conf'
 arch-chroot $MOUNTPOINT sh -c 'curl https://raw.githubusercontent.com/ThorstenHeck/archinstall/master/pacman.conf > /etc/pacman.conf'
-arch-chroot $MOUNTPOINT sed -i 's/HOOKS.*/HOOKS=(base udev autodetect modconf kms keyboard keymap consolefront block encrypt lvm2 filesystems fsck)/ig' /etc/mkinitcpio.conf
+arch-chroot $MOUNTPOINT sed -i 's/^HOOKS.*/HOOKS=(base udev autodetect modconf kms keyboard keymap consolefront block encrypt lvm2 filesystems fsck)/ig' /etc/mkinitcpio.conf
 
 arch-chroot $MOUNTPOINT pacman -Sy intel-ucode --noconfirm
 arch-chroot $MOUNTPOINT pacman -S linux-headers linux-lts linux-lts-headers --noconfirm
@@ -71,6 +77,7 @@ arch-chroot $MOUNTPOINT bootctl --path=/boot/ install
 arch-chroot $MOUNTPOINT sh -c 'curl https://raw.githubusercontent.com/ThorstenHeck/archinstall/master/loader.conf > /boot/loader/loader.conf'
 arch-chroot $MOUNTPOINT sh -c 'curl https://raw.githubusercontent.com/ThorstenHeck/archinstall/master/arch.conf > /boot/loader/entries/arch.conf'
 
+# A=$(blkid | grep Root | awk '{print $2}' | awk -F= '{print $2}' | tr -d '"')
 # ## sed REPLACE_ME...
 
 # arch-chroot $MOUNTPOINT echo "root:initpw" | chpasswd
