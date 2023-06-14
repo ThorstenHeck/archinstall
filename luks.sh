@@ -76,7 +76,7 @@ arch-chroot $MOUNTPOINT mkinitcpio -p linux-lts
 arch-chroot $MOUNTPOINT bootctl --path=/boot/ install
 arch-chroot $MOUNTPOINT sh -c 'curl https://raw.githubusercontent.com/ThorstenHeck/archinstall/master/loader.conf > /boot/loader/loader.conf'
 arch-chroot $MOUNTPOINT sh -c 'curl https://raw.githubusercontent.com/ThorstenHeck/archinstall/master/arch.conf > /boot/loader/entries/arch.conf'
-arch-chroot $MOUNTPOINT sh -c " UUID=$(blkid | grep Root | cut -d"=" -f 2 | cut -c-36 | tr -d '\"') ; echo options cryptdevice=\${UUID}=REPLACE_ME:cryptlvm root=/dev/mapper/main_group-root quiet rw >> /boot/loader/entries/arch.conf"
+arch-chroot $MOUNTPOINT sh -c " UUID=$(blkid | grep Root | cut -d"=" -f 2 | cut -c-36 | tr -d '\"') ; echo options cryptdevice=\${UUID}:cryptlvm root=/dev/mapper/main_group-root quiet rw >> /boot/loader/entries/arch.conf"
 
 arch-chroot $MOUNTPOINT echo "root:initpw" | chpasswd
 
