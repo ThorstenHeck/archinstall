@@ -65,7 +65,7 @@ arch-chroot $MOUNTPOINT ln -s /etc/fonts/conf.avail/11-lcdfilter-default.conf /e
     
 arch-chroot $MOUNTPOINT sh -c 'curl https://raw.githubusercontent.com/ThorstenHeck/archinstall/master/local.conf > /etc/fonts/local.conf'
 arch-chroot $MOUNTPOINT sh -c 'curl https://raw.githubusercontent.com/ThorstenHeck/archinstall/master/pacman.conf > /etc/pacman.conf'
-arch-chroot $MOUNTPOINT sed -i 's/^HOOKS.*/HOOKS=(base udev autodetect modconf kms keyboard keymap consolefront block encrypt lvm2 filesystems fsck)/ig' /etc/mkinitcpio.conf
+arch-chroot $MOUNTPOINT sed -i 's/^HOOKS.*/HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block encrypt lvm2 filesystems fsck)/ig' /etc/mkinitcpio.conf
 
 arch-chroot $MOUNTPOINT pacman -Sy intel-ucode --noconfirm
 arch-chroot $MOUNTPOINT pacman -S linux-headers linux-lts linux-lts-headers --noconfirm
