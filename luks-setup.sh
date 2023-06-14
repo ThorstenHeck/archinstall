@@ -8,6 +8,8 @@ reflector --verbose --country 'Germany' --latest 10 --protocol http --protocol h
 pacstrap -K $MOUNTPOINT base base-devel linux linux-firmware netctl
 genfstab -U $MOUNTPOINT > ${MOUNTPOINT}/etc/fstab
 
+arch-chroot $MOUNTPOINT pacman -S lvm2 --noconfirm
+
 arch-chroot $MOUNTPOINT ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 arch-chroot $MOUNTPOINT sh -c 'echo "archlinux" > /etc/hostname'
 arch-chroot $MOUNTPOINT sh -c 'echo "LANG=de_DE.UTF-8" > /etc/locale.conf'
@@ -26,7 +28,7 @@ arch-chroot $MOUNTPOINT sh -c 'curl https://raw.githubusercontent.com/ThorstenHe
 arch-chroot $MOUNTPOINT sh -c 'curl https://raw.githubusercontent.com/ThorstenHeck/archinstall/master/pacman.conf > /etc/pacman.conf'
 arch-chroot $MOUNTPOINT sed -i 's/^HOOKS.*/HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block encrypt lvm2 filesystems fsck)/ig' /etc/mkinitcpio.conf
 
-arch-chroot $MOUNTPOINT pacman -S wpa_supplicant networkmanager network-manager-applet dialog lvm2 ttf-dejavu ttf-liberation noto-fonts --noconfirm
+arch-chroot $MOUNTPOINT pacman -S wpa_supplicant networkmanager network-manager-applet dialog ttf-dejavu ttf-liberation noto-fonts --noconfirm
 arch-chroot $MOUNTPOINT pacman -Sy intel-ucode --noconfirm
 arch-chroot $MOUNTPOINT pacman -S linux-headers linux-lts linux-lts-headers --noconfirm
 arch-chroot $MOUNTPOINT pacman -S vim git --noconfirm
